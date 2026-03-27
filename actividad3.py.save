@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+from scapy.all import rdpcap, ICMP
+import string
+
+def extraer_mensaje(pcap_file):
+    """
+    Extrae el primer byte del campo Data de cada paquete ICMP.
+    """
+    paquetes = rdpcap(pcap_file)
+    mensaje = ""
+
+    for pkt in paquetes:
+        if ICMP in pkt and pkt[ICMP].type == 8:  # Echo Request
+            if hasattr(pkt[ICMP], "payload"):
+                data = bytes(pkt[ICMP].payload.load)
+                if len(data) > 0:
+                    letra = chr(data[0])  # primer byte = la letra enviada
+                    mensaje += letra
+    return mensaje
+
+
+def descifrar_cesar(texto):
+    """
+    Genera todas las posibles rotaciones César (0-25).
+    """
+    resultados = []
+    for shift in range(26):
+        descifrado = ""
+        for char in texto:
+            if char.isalpha():
+                base = ord('A') if char.isupper() else ord('a')
+                descifrado += chr((ord(char) - base - shift) % 26 + base)
+            else:
+                descifrado += char
+        resultados.append((shift, descifrado))
+    return resultados
+
+
+if __name__ == "__main__":
+    archivo = "captura.pcapng"   # Cambia por el nombre de tu captura
+    mensaje_cifrado = extraer_mensaje(archivo)
+
+    print(f"[+] Mensaje capturado: {mensaje_cifrado}\n")
+    print("[+] Intentos de descifrado (César):\n")
+
+    resultados = descifrar_cesar(mensaje_cifrado)
+
+    for shift, texto in resultados:
+        if "hola" in texto.lower():  # criterio simple para resaltar
+            print(f"\033[92mShift {shift}: {texto}\033[0m")  # verde
+        else:
+            print(f"Shift {shift}: {texto}")
+/bin/python3 "/home/imsebs/Escritorio/Visual studio code/lab 1 cripto/actividad3.py"
+/bin/python3 "/home/imsebs/Escritorio/Visual studio code/lab 1 cripto/actividad3.py"
+/bin/python3 "/home/imsebs/Escritorio/Visual studio code/lab 1 cripto/actividad3.py"
+/bin/python3 "/home/imsebs/Escritorio/Visual studio code/lab 1 cripto/actividad3.py"
+/bin/python3 "/home/imsebs/Escritorio/Visual studio code/lab 1 cripto/actividad3.py"
+/bin/python3 "/home/imsebs/Escritorio/Visual studio code/lab 1 cripto/actividad3.py"
+/bin/python3 "/home/imsebs/Escritorio/Visual studio code/lab 1 cripto/actividad3.py"
+
